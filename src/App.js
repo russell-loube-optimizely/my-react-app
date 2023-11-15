@@ -12,8 +12,10 @@ function App() {
 
   const [text, setText] = useState();
   const [cta, setCta] = useState();
+  const [buttonText, setButtonText] = useState();
   const fallbackText = "Optimizely";
   const fallbackCta = "Learn More";
+  const fallbackButtonText = "Submit";
 
   function handleChange(event) {
     const value = event.target.value;
@@ -29,10 +31,12 @@ function App() {
       .decideAll(state.userId, state.country)
       .then((decision) => {
         console.log(decision);
-        const variables = decision.decisions[0].variables;
-        console.log(variables);
-        setText(variables.text);
-        setCta(variables.cta);
+        const flag1Variables = decision.decisions[0].variables;
+        const flag2Variables = decision.decisions[1].variables;
+        console.log(flag1Variables);
+        setText(flag1Variables.text);
+        setCta(flag1Variables.cta);
+        setButtonText(flag2Variables.buttonText);
       });
   };
 
@@ -65,7 +69,7 @@ function App() {
             onChange={handleChange}
           />
         </label>
-        <button type="submit">Submit</button>
+        <button type="submit">{buttonText || fallbackButtonText}</button>
       </form>
       <header className="App-header">
         <img

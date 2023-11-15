@@ -19,12 +19,15 @@ const decideAll = (userId, userCountry) => {
     headers: {
       "X-Optimizely-Visitor-Id": userId,
       "X-Optimizely-Attributes-Header": stringAttributes,
-      "X-Optimizely-Decide-Options": ["INCLUDE_REASONS"],
+      "X-Optimizely-Decide-Options": ["INCLUDE_REASONS", "ENABLED_FLAGS_ONLY"],
     },
   };
 
   const request = axios.post(`${baseUrl}/decide`, data, config);
-  return request.then((response) => response.data);
+  return request.then((response) => {
+    console.log(response.data);
+    return response.data;
+  });
 };
 
 export default {
