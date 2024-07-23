@@ -1,5 +1,6 @@
 import white from "./optimizely_logo_white.png";
 import color from "./optimizely_logo_color.png";
+import black from "./optimizely_logo_black.png";
 import "./App.css";
 import agent from "./services/agent";
 import { useState } from "react";
@@ -9,13 +10,19 @@ function App() {
     userId: " ",
     lastName: " ",
   });
-
   const [text, setText] = useState();
   const [cta, setCta] = useState();
+  const [logo, setLogo] = useState(color);
   const [buttonText, setButtonText] = useState();
+
   const fallbackText = "Optimizely";
   const fallbackCta = "Learn More";
   const fallbackButtonText = "Submit";
+  const logoVariations = {
+    white: white,
+    color: color,
+    black: black,
+  };
 
   function handleChange(event) {
     const value = event.target.value;
@@ -25,19 +32,25 @@ function App() {
     });
   }
 
-  const addUser = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const decision = agent
       .decideAll(state.userId, state.country)
       .then((decision) => {
-        console.log(decision);
         const flag1Variables = decision.decisions[0].variables;
-        const flag2Variables = decision.decisions[1].variables;
-        console.log(flag1Variables);
         setText(flag1Variables.text);
         setCta(flag1Variables.cta);
-        setButtonText(flag2Variables.buttonText);
+        setLogo(logoVariations[flag1Variables.logoVariation]);
+        console.log("logo", logo);
+        setButtonText(flag1Variables.cta);
       });
+  };
+
+  const handleCtaClick = () => {
+    // const url = "https://optimizely.com"; // Replace with your desired URL
+    // window.open(url, "_blank");
+    console.log("state.userId", state.userId);
+    agent.track(state.userId);
   };
 
   return (
@@ -49,7 +62,7 @@ function App() {
           display: "flex",
           justifyContent: "flex-end",
         }}
-        onSubmit={addUser}
+        onSubmit={handleSubmit}
       >
         <label>
           User ID
@@ -73,7 +86,7 @@ function App() {
       </form>
       <header className="App-header">
         <img
-          src={color}
+          src={logo}
           className="App-logo"
           alt="logo"
           style={{
@@ -83,14 +96,19 @@ function App() {
           }}
         />
         <p>{text || fallbackText}</p>
-        <a
-          className="App-link"
-          href="https://youtu.be/dQw4w9WgXcQ?feature=shared"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          style={{
+            fontSize: "25px", // Makes the button text larger
+            color: "white", // Sets the text color to white
+            backgroundColor: "#0037ff", // Sets the background color
+            padding: "10px 20px", // Adds some padding for extra size
+            border: "none", // Removes the border
+            cursor: "pointer", // Changes the cursor on hover
+          }}
+          onClick={handleCtaClick}
         >
           {cta || fallbackCta}
-        </a>
+        </button>
       </header>
     </div>
   );
