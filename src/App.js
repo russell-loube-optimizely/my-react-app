@@ -4,6 +4,7 @@ import black from "./optimizely_logo_black.png";
 import "./App.css";
 import agent from "./services/agent";
 import { useState } from "react";
+import confetti from "canvas-confetti";
 
 function App() {
   const [state, setState] = useState({
@@ -47,10 +48,14 @@ function App() {
   };
 
   const handleCtaClick = () => {
-    // const url = "https://optimizely.com"; // Replace with your desired URL
-    // window.open(url, "_blank");
-    console.log("state.userId", state.userId);
-    agent.track(state.userId);
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.8 },
+    });
+    if (state.userId != " ") {
+      agent.track(state.userId);
+    }
   };
 
   return (
